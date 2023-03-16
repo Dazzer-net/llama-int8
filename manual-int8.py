@@ -1,7 +1,7 @@
 from example import load
 
 gen_global = load(
-	ckpt_dir = "../weights/7B",
+	ckpt_dir = "../weights/30B",
 	tokenizer_path = "../weights/tokenizer.model",
 	max_seq_len = 512,
 	max_batch_size = 32,
