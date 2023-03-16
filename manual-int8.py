@@ -12,12 +12,10 @@ gen_global = load(
 
 while True:
 
+	print("Prompt: ")
 	prompt = str(input())
 
 	prompts = [prompt]
-
-	print(prompts)
-
 	results = gen_global.generate(
 		prompts,
 		max_gen_len=1024,
@@ -27,7 +25,7 @@ while True:
 	    repetition_penalty_slope=0,
 	    repetition_penalty=1.15, 
 		)
-
 	result = results[0]
+	
 	print(result)
 
