@@ -2,7 +2,7 @@ import flask
 import string
 import random
 import os
-import example.py
+import example
 
 
 app = flask.Flask(__name__)
@@ -15,7 +15,6 @@ gen_global = load(
 	max_batch_size = 32,
 	use_int8 = True
 	)
-
 
 
 @app.route("/")
@@ -46,6 +45,7 @@ def flask_inference_no_batching():
         repetition_penalty_slope=0,
         repetition_penalty=1.15, 
 		)
+
 	result = results[0]
 
 	print("result from model: ", result)
