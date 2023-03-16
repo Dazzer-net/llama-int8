@@ -26,6 +26,8 @@ def hello():
 @app.route("/flask-inference/", methods = ["POST"])
 def flask_inference_no_batching():
 
+	global gen_global
+
 	print("received POST request", flush=True)
 
 	req_data = flask.request.json
@@ -38,11 +40,11 @@ def flask_inference_no_batching():
 	results = gen_global.generate(
 		prompts,
 		max_gen_len=1024,
-        temperature=temperature,
-        top_p=top_p,
-        repetition_penalty_range=repetition_penalty_range,
-        repetition_penalty_slope=repetition_penalty_slope,
-        repetition_penalty=repetition_penalty, 
+        temperature=0.8,
+        top_p=0.95,
+        repetition_penalty_range=1024,
+        repetition_penalty_slope=0,
+        repetition_penalty=1.15, 
 		)
 	result = results[0]
 
