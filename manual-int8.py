@@ -26,4 +26,5 @@ while True:
 		)
 
 	result = results[0]
+	print(result)
 
