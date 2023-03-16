@@ -13,7 +13,7 @@ gen_global = load(
 	tokenizer_path = "../weights/tokenizer.model",
 	max_seq_len = 512,
 	max_batch_size = 32,
-	use_int8 = True
+	quantize = True
 	)
 
 
