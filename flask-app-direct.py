@@ -2,7 +2,7 @@ import flask
 import string
 import random
 import os
-import example
+from example import load
 
 
 app = flask.Flask(__name__)
