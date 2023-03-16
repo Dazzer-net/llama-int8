@@ -15,6 +15,9 @@ while True:
 	prompt = str(input())
 
 	prompts = [prompt]
+
+	print(prompts)
+
 	results = gen_global.generate(
 		prompts,
 		max_gen_len=1024,
