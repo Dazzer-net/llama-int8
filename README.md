@@ -8,7 +8,7 @@ Currently testing, do not trust code or docs.
 
 On server:
 
-1. Make folder structure
+1. Create folder structure
 2. Install bitsandbytes and other dependencies to run facebook LLaMA with int8
 3. Download weights
 4. Use this repo to start flask server
@@ -18,10 +18,12 @@ On client machine:
 1. Test that server is running
 
 
-#### Make folder structure
+#### Create folder structure
 
+```
 cd ~
 mkdir llama llama/weights
+```
 
 #### To install bitsandbytes from source
 
@@ -33,6 +35,7 @@ cd ~/bitsandbytes
 make cuda11x CUDA_VERSION=116
 python setup.py install
 pip install torch fairscale fire sentencepiece tqdm
+export PATH="/usr/local/cuda-12.1/bin:$PATH"
 export LD_LIBRARY_PATH=/opt/conda/lib
 cd ~
 ```
