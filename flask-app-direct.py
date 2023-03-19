@@ -58,4 +58,5 @@ if __name__ == "__main__":
 		max_batch_size = 32,
 		quantize = True
 		)
-	app.run()
+	
+	app.run(host='0.0.0.0')
