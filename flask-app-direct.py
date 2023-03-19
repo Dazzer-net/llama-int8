@@ -7,16 +7,6 @@ from example import load
 
 app = flask.Flask(__name__)
 
-# runs when app starts
-gen_global = load(
-	ckpt_dir = "../weights/7B",
-	tokenizer_path = "../weights/tokenizer.model",
-	max_seq_len = 512,
-	max_batch_size = 32,
-	quantize = True
-	)
-
-
 @app.route("/")
 def hello():
 	print("flask server is running", flush=True)
@@ -56,3 +46,14 @@ def flask_inference_no_batching():
 	}
 
 	return flask.jsonify(res_data)
+
+if __name__ == "__main__":
+	# runs when app starts
+	gen_global = load(
+		ckpt_dir = "../weights/7B",
+		tokenizer_path = "../weights/tokenizer.model",
+		max_seq_len = 512,
+		max_batch_size = 32,
+		quantize = True
+		)
+
