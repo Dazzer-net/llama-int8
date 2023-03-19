@@ -47,6 +47,8 @@ def flask_inference_no_batching():
 
 	return flask.jsonify(res_data)
 
+
+# this is in global context
 if __name__ == "__main__":
 	# runs when app starts
 	gen_global = load(
@@ -56,4 +58,4 @@ if __name__ == "__main__":
 		max_batch_size = 32,
 		quantize = True
 		)
-
+	app.run()
