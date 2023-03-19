@@ -49,13 +49,14 @@ git clone https://github.com/Aashrith-V/bitsandbytes.git
 
 From seedbox:
 
-(replace XXX.XXX.XXX.XXX with IP of seedbox)
+(replace XXX.XXX.XXX.XXX with IP of seedbox, yyyyyyyy with password of seedbox)
+
 (to use a bigger model replace 7B with 13B, 30B or 65B)
 
 ```
 sftp -P 2222 user@XXX.XXX.XXX.XXX
 yes
-1c82a6bbbc
+yyyyyyyy
 cd Downloads/LLaMA
 lcd ~/llama/weights
 get *.*
