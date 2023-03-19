@@ -1,83 +1,97 @@
-# LLaMA: INT8 edition
+# LLaMA int8 + flask server
 
-This is a fork of the LLaMA code that runs LLaMA-13B
-comfortably within 24 GiB of RAM.
-It relies almost entirely on the `bitsandbytes` and `LLM.int8()` work of Tim Dettmers.
-I've tested it on an RTX 4090, and it [reportedly works on the 3090](https://github.com/facebookresearch/llama/issues/79#issuecomment-1454687232). It might also theoretically allow us to run LLaMA-65B on an 80GB A100, but I haven't tried this.
+This is a fork of LLaMA int8 by tloen
 
-The code contains the following changes:
+Currently testing, do not trust code or docs.
 
-- Removes parallelism constructs
-- Quantizes weights on the host machine
-- Loads weights incrementally to avoid severe memory problems
-- Added dependencies on `bitsandbytes`, `tqdm`.
-- Repetition penalty settings (`--repetition_penalty`, default 1.15)
+## How to use
 
-On my Ubuntu machine with 64 GB of RAM and an RTX 4090, it takes about 25 seconds to load in the floats and quantize the model.
-Users should be ready to expand their swapfiles if they don't have enough RAM.
-Llamanon has also produced a [slightly uncouth user's guide](https://rentry.org/llama-tard) for using this repo, which I won't reproduce here but seems generally trustworthy.
-[You will likely need to build `bitsandbytes` from source.](https://github.com/TimDettmers/bitsandbytes/blob/main/compile_from_source.md)
+On server:
 
-If you have interesting ideas for further development, I can be reached at https://twitter.com/ecjwg.
+1. Make folder structure
+2. Install bitsandbytes and other dependencies to run facebook LLaMA with int8
+3. Download weights
+4. Use this repo to start flask server
 
-## Usage:
+On client machine:
 
-`python example.py --ckpt_dir [TARGET_DIR]/13B --tokenizer_path [TARGET_DIR]/tokenizer.model --max_batch_size=1`
+1. Test that server is running
 
----
 
-# Original README
+#### Make folder structure
 
-This repository is intended as a minimal, hackable and readable example to load [LLaMA](https://ai.facebook.com/blog/large-language-model-llama-meta-ai/) ([arXiv](https://arxiv.org/abs/2302.13971v1)) models and run inference.
-In order to download the checkpoints and tokenizer, fill this [google form](https://forms.gle/jk851eBVbX1m5TAv5)
+cd ~
+mkdir llama llama/weights
 
-### Setup
-
-In a conda env with pytorch / cuda available, run
+#### To install bitsandbytes from source
 
 ```
-pip install -r requirements.txt
+sudo apt install -y build-essential
+cd ~
+git clone https://github.com/tloen/llama-int8
+cd ~/bitsandbytes
+make cuda11x CUDA_VERSION=116
+python setup.py install
+pip install torch fairscale fire sentencepiece tqdm
+export LD_LIBRARY_PATH=/opt/conda/lib
+cd ~
 ```
 
-Then in this repository
-
+If your system has lib not lib64, use this repo instead of tloen's repo:
 ```
-pip install -e .
-```
-
-### Download
-
-Once your request is approved, you will receive links to download the tokenizer and model files.
-Edit the `download.sh` script with the signed url provided in the email to download the model weights and tokenizer.
-
-### Inference
-
-The provided `example.py` can be run on a single or multi-gpu node with `torchrun` and will output completions for two pre-defined prompts. Using `TARGET_FOLDER` as defined in `download.sh`:
-
-```
-torchrun --nproc_per_node MP example.py --ckpt_dir $TARGET_FOLDER/model_size --tokenizer_path $TARGET_FOLDER/tokenizer.model
+git clone https://github.com/Aashrith-V/bitsandbytes.git
 ```
 
-Different models require different MP values:
+#### To download weights
 
-| Model | MP  |
-| ----- | --- |
-| 7B    | 1   |
-| 13B   | 2   |
-| 33B   | 4   |
-| 65B   | 8   |
+From seedbox:
 
-### FAQ
+(replace XXX.XXX.XXX.XXX with IP of seedbox)
+(to use a bigger model replace 7B with 13B, 30B or 65B)
 
-- [1. The download.sh script doesn't work on default bash in MacOS X](FAQ.md#1)
-- [2. Generations are bad!](FAQ.md#2)
-- [3. CUDA Out of memory errors](FAQ.md#3)
-- [4. Other languages](FAQ.md#4)
+```
+sftp -P 2222 user@XXX.XXX.XXX.XXX
+yes
+1c82a6bbbc
+cd Downloads/LLaMA
+lcd ~/llama/weights
+get *.*
+cd 7B
+lmkdir 7B
+lcd 7B
+get *.*
+exit
+```
 
-### Model Card
+#### To run flask app with LLaMA int8
 
-See [MODEL_CARD.md](MODEL_CARD.md)
+(This will expose model on all open ports to HTTP traffic, your IP can be DDoSed)
 
-### License
+```
+cd ~/llama/llama-int8
+python3 flask-app-direct.py
+```
 
-See the [LICENSE](LICENSE) file.
+#### On client machine: To test flask server
+
+In python interpreter or new python file:
+
+```
+import requests
+r1 = requests.post(url = "http://127.0.0.1:5000/flask-inference/", json = {"apikey":"22c1d19df3fafe2576f409c8", "prompt": "What is your name?"})
+print(r1.json())
+```
+
+#### To run flask app without loading or running LLaMA
+
+```
+cd ~/llama/llama-int8
+python3 flask-app-test.py
+```
+
+#### To test LLaMA interactively, without running flask app
+
+```
+cd ~/llama/llama-int8
+python3 manual-int8.py
+```
