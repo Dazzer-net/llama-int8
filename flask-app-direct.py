@@ -10,7 +10,12 @@ app = flask.Flask(__name__)
 @app.route("/")
 def hello():
 	print("flask server is running", flush=True)
-	return "flask server is running"
+
+	message = {
+		"message" : "flask server is running"
+	}
+
+	return flask.jsonify(message)
 
 @app.route("/flask-inference/", methods = ["POST"])
 def flask_inference_no_batching():
